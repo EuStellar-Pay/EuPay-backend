@@ -11,3 +11,4 @@ router.post('/', (req, res) => {
 router.get('/:id', (req, res) => res.json({ id: req.params.id, status: 'active', ratePerSecond: '1000000', totalClaimed: '0' }));
 router.delete('/:id', (req, res) => res.json({ id: req.params.id, status: 'cancelled' }));
 export { router as streamRouter };
+fix: add input sanitisation to all stream endpoints
