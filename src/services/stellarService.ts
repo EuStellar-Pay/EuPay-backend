@@ -7,3 +7,7 @@ export async function getAccountBalance(address: string): Promise<string> {
     return (account as any).balances?.find((b: any) => b.asset_type === 'native')?.balance || '0';
   } catch { return '0'; }
 }
+
+export async function isValidStellarAddress(address: string): Promise<boolean> {
+  return /^G[A-Z0-9]{55}$/.test(address);
+}
