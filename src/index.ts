@@ -6,6 +6,7 @@ import { employerRouter } from './routes/employers';
 import { workerRouter }   from './routes/workers';
 import { healthRouter }   from './routes/health';
 import { authRouter }     from './routes/auth';
+import { eventRouter }    from './routes/events';
 import { requestLogger }  from './middleware/requestLogger';
 import { errorHandler }   from './middleware/errorHandler';
 import { apiLimiter }     from './middleware/rateLimit';
@@ -23,6 +24,7 @@ app.use('/api',           apiLimiter);
 app.use('/api/streams',   streamRouter);
 app.use('/api/employers', employerRouter);
 app.use('/api/workers',   workerRouter);
+app.use('/api',           eventRouter);
 
 app.use((_req, res) => res.status(404).json({ error: 'Not found' }));
 app.use(errorHandler);
