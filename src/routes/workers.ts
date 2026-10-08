@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { requireAuth } from '../middleware/auth';
+import { writeLimiter } from '../middleware/rateLimit';
 import { getStream, getClaimableAmount } from '../services/contractClient';
 import { buildClaimXdr } from '../services/txBuilder';
 
@@ -33,7 +34,7 @@ router.get('/:address/streams/:id', async (req: Request, res: Response) => {
 });
 
 // POST /api/workers/:address/claim — build unsigned claim XDR
-router.post('/:address/claim', requireAuth, async (req: Request, res: Response) => {
+router.post('/:address/claim', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const workerAddress = (req as any).stellarAddress as string;
   if (workerAddress !== req.params.address) {
     res.status(403).json({ error: 'Authenticated address does not match URL address' });

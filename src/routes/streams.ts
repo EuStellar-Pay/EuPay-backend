@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { requireAuth } from '../middleware/auth';
+import { writeLimiter } from '../middleware/rateLimit';
 import {
   getStream,
   getClaimableAmount,
@@ -71,7 +72,7 @@ router.get('/:id/claimable', async (req: Request, res: Response) => {
 });
 
 // POST /api/streams — build unsigned create_stream XDR
-router.post('/', requireAuth, async (req: Request, res: Response) => {
+router.post('/', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const parsed = CreateStreamSchema.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: 'Validation failed', details: parsed.error.issues });
@@ -91,7 +92,7 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
 });
 
 // DELETE /api/streams/:id — build unsigned cancel_stream XDR
-router.delete('/:id', requireAuth, async (req: Request, res: Response) => {
+router.delete('/:id', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const streamId = parseInt(req.params.id, 10);
   if (isNaN(streamId) || streamId < 1) {
     res.status(400).json({ error: 'Invalid stream ID' });
@@ -107,7 +108,7 @@ router.delete('/:id', requireAuth, async (req: Request, res: Response) => {
 });
 
 // POST /api/streams/:id/pause — build unsigned pause XDR
-router.post('/:id/pause', requireAuth, async (req: Request, res: Response) => {
+router.post('/:id/pause', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const streamId = parseInt(req.params.id, 10);
   if (isNaN(streamId) || streamId < 1) {
     res.status(400).json({ error: 'Invalid stream ID' });
@@ -123,7 +124,7 @@ router.post('/:id/pause', requireAuth, async (req: Request, res: Response) => {
 });
 
 // POST /api/streams/:id/resume — build unsigned resume XDR
-router.post('/:id/resume', requireAuth, async (req: Request, res: Response) => {
+router.post('/:id/resume', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const streamId = parseInt(req.params.id, 10);
   if (isNaN(streamId) || streamId < 1) {
     res.status(400).json({ error: 'Invalid stream ID' });
@@ -139,7 +140,7 @@ router.post('/:id/resume', requireAuth, async (req: Request, res: Response) => {
 });
 
 // POST /api/streams/:id/fund — build unsigned fund_stream XDR
-router.post('/:id/fund', requireAuth, async (req: Request, res: Response) => {
+router.post('/:id/fund', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const streamId = parseInt(req.params.id, 10);
   if (isNaN(streamId) || streamId < 1) {
     res.status(400).json({ error: 'Invalid stream ID' });

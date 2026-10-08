@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { generateNonce } from '../middleware/auth';
+import { nonceLimiter } from '../middleware/rateLimit';
 
 const router = Router();
 
 const STELLAR_ADDRESS = /^G[A-Z0-9]{55}$/;
 
 // GET /api/auth/nonce/:address — get a challenge nonce to sign
-router.get('/nonce/:address', (req: Request, res: Response) => {
+router.get('/nonce/:address', nonceLimiter, (req: Request, res: Response) => {
   const { address } = req.params;
   if (!STELLAR_ADDRESS.test(address)) {
     res.status(400).json({ error: 'Invalid Stellar address' });

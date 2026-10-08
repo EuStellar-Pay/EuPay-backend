@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
 import { requireAuth } from '../middleware/auth';
+import { writeLimiter } from '../middleware/rateLimit';
 import { getTreasuryBalance, getStreamAllocation } from '../services/contractClient';
 import { buildDepositXdr, buildAllocateXdr } from '../services/txBuilder';
 
@@ -58,7 +59,7 @@ router.get('/:address/treasury/allocation', async (req: Request, res: Response) 
 });
 
 // POST /api/employers/:address/treasury/deposit — build unsigned deposit XDR
-router.post('/:address/treasury/deposit', requireAuth, async (req: Request, res: Response) => {
+router.post('/:address/treasury/deposit', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const employerAddress = (req as any).stellarAddress as string;
   if (employerAddress !== req.params.address) {
     res.status(403).json({ error: 'Authenticated address does not match URL address' });
@@ -78,7 +79,7 @@ router.post('/:address/treasury/deposit', requireAuth, async (req: Request, res:
 });
 
 // POST /api/employers/:address/treasury/allocate — build unsigned allocate XDR
-router.post('/:address/treasury/allocate', requireAuth, async (req: Request, res: Response) => {
+router.post('/:address/treasury/allocate', requireAuth, writeLimiter, async (req: Request, res: Response) => {
   const employerAddress = (req as any).stellarAddress as string;
   if (employerAddress !== req.params.address) {
     res.status(403).json({ error: 'Authenticated address does not match URL address' });

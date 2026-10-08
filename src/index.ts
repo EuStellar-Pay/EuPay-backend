@@ -8,6 +8,7 @@ import { healthRouter }   from './routes/health';
 import { authRouter }     from './routes/auth';
 import { requestLogger }  from './middleware/requestLogger';
 import { errorHandler }   from './middleware/errorHandler';
+import { apiLimiter }     from './middleware/rateLimit';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(requestLogger);
 
 app.use('/health',        healthRouter);
 app.use('/api/auth',      authRouter);
+app.use('/api',           apiLimiter);
 app.use('/api/streams',   streamRouter);
 app.use('/api/employers', employerRouter);
 app.use('/api/workers',   workerRouter);
