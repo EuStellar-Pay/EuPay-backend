@@ -1,4 +1,4 @@
-import { SorobanRpc, Networks } from '@stellar/stellar-sdk';
+import { rpc as SorobanRpc, Networks } from '@stellar/stellar-sdk';
 const RPC_URL = process.env.STELLAR_RPC_URL || 'https://soroban-testnet.stellar.org';
 export const rpcServer = new SorobanRpc.Server(RPC_URL);
 export async function getAccountBalance(address: string): Promise<string> {
